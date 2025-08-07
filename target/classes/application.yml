@@ -1,0 +1,113 @@
+jwt:
+  secret: adsfdsifsiudaiow12313e2
+  expiration: 604800
+  header: Authorization
+  prefix: Bearer
+
+
+spring:
+  application:
+    name: demo-lihan
+  
+  profiles:
+    active: dev
+  
+  datasource:
+    url: jdbc:mysql://localhost:3306/eduplatform?useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&useUnicode=true&characterEncoding=utf8
+    username: root
+    password: ${DB_PASSWORD:15440762}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+    show-sql: true
+  
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      timeout: 2000ms
+      lettuce:
+        pool:
+          max-active: 8
+          max-idle: 8
+          min-idle: 0
+
+---
+# 开发环境配置
+spring:
+  config:
+    activate:
+      on-profile: dev
+  
+  datasource:
+    url: jdbc:mysql://localhost:3306/eduplatform?useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&useUnicode=true&characterEncoding=utf8
+    username: root
+    password: ${DB_PASSWORD:15440762}
+  
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+# 日志配置
+logging:
+  level:
+    com.lihan.demo_lihan: debug
+    org.springframework.security: debug
+
+---
+# 测试环境配置
+spring:
+  config:
+    activate:
+      on-profile: test
+  
+  datasource:
+    url: jdbc:mysql://localhost:3306/eduplatform_test?useSSL=false&serverTimezone=Asia/Shanghai
+    username: root
+    password: ${DB_PASSWORD:15440762}
+  
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: false
+
+# 日志配置
+logging:
+  level:
+    com.lihan.demo_lihan: info
+
+---
+# 生产环境配置
+spring:
+  config:
+    activate:
+      on-profile: prod
+  
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+  
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+  
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:}
+
+# 日志配置
+logging:
+  level:
+    com.lihan.demo_lihan: warn
+    org.springframework.security: warn
